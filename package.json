@@ -6,11 +6,11 @@
   "repository": "https://github.com/duplojs/duplojs-destruct-floor",
   "license": "ISC",
   "keywords": [],
-  "types": "./types/scripts/.ts",
+  "types": "./types/scripts/index.ts",
   "exports": {
     "default": {
-      "import": "./dist/.mjs",
-      "require": "./dist/.cjs"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     }
   },
   "files": [
@@ -21,11 +21,12 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "nodemon --exec 'ts-node test'",
+    "dev": "nodemon --exec 'ts-node --transpiler sucrase/ts-node-plugin test'",
     "build": "rollup --config && npx tsc"
   },
   "dependencies": {
-    "@duplojs/duplojs": ">=0.13.20"
+    "@duplojs/duplojs": ">=0.13.23",
+    "@duplojs/editor-tools": "^0.1.1"
   },
   "devDependencies": {
     "@duplojs/worker-testing": "^0.1.4",
@@ -39,6 +40,7 @@
     "rollup": "^3.26.2",
     "rollup-plugin-dts": "^5.3.0",
     "rollup-plugin-esbuild": "^5.0.0",
+    "sucrase": "^3.34.0",
     "ts-node": "^10.9.1",
     "tslib": "^2.5.0",
     "typescript": "^5.0.2"
