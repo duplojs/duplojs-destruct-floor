@@ -6,7 +6,7 @@
   "repository": "https://github.com/duplojs/duplojs-destruct-floor",
   "license": "ISC",
   "keywords": [],
-  "types": "./types/scripts/index.ts",
+  "types": "./types/scripts/index.d.ts",
   "exports": {
     "default": {
       "import": "./dist/index.mjs",
