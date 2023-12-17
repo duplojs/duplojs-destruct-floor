@@ -1,5 +1,5 @@
 import {AbstractRoute, DuploConfig, DuploInstance, Floor, ProcessExport, Route} from "@duplojs/duplojs";
-import {duploExtend, duploInjector} from "@duplojs/editor-tools";
+import {duploExtends, duploInjector} from "@duplojs/editor-tools";
 import packageJson from "../package.json";
 
 declare module "@duplojs/duplojs" {
@@ -16,6 +16,9 @@ export default function duploDestructFloor(instance: DuploInstance<DuploConfig>)
 	instance.plugins["@duplojs/destruct-floor"] = {version: packageJson.version};
 	
 	if(instance.config.rebuildRoutes !== false)instance.config.rebuildRoutes = true;
+	if(instance.config.rebuildProcess !== false)instance.config.rebuildProcess = true;
+	if(instance.config.rebuildAbstractRoutes !== false)instance.config.rebuildAbstractRoutes = true;
+	
 
 	const makeDestructFloor = (): Floor<{}> => {
 		const d = {};
@@ -27,26 +30,27 @@ export default function duploDestructFloor(instance: DuploInstance<DuploConfig>)
 		};
 	};
     
-	const replaceMakeFloor = (duplose: Route | ProcessExport | AbstractRoute) => {
+	const replaceMakeFloor = (rebuild?: boolean) => 
+		(duplose: Route | ProcessExport | AbstractRoute) => {
 		
-		duploExtend(
-			duplose, 
-			{makeDestructFloor}
-		);
+			duploExtends(
+				duplose, 
+				{makeDestructFloor}
+			);
 
-		duploInjector(
-			duplose, 
-			(d) => {
-				d.stringFunction = d.stringFunction.replace(
-					"this.makeFloor", 
-					"this.extends.makeDestructFloor"
-				);
-			},
-			// instance.config.rebuildRoutes || undefined
-		);
-	};
+			duploInjector(
+				duplose, 
+				(d) => {
+					d.stringFunction = d.stringFunction.replace(
+						"this.makeFloor", 
+						"this.extends.makeDestructFloor"
+					);
+				},
+				rebuild
+			);
+		};
 
-	instance.addHook("onDeclareRoute", replaceMakeFloor);
-	instance.addHook("onDeclareAbstractRoute", replaceMakeFloor);
-	instance.addHook("onCreateProcess", replaceMakeFloor);
+	instance.addHook("onDeclareRoute", replaceMakeFloor(instance.config.rebuildRoutes));
+	instance.addHook("onDeclareAbstractRoute", replaceMakeFloor(instance.config.rebuildAbstractRoutes));
+	instance.addHook("onCreateProcess", replaceMakeFloor(instance.config.rebuildProcess));
 }
