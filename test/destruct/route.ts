@@ -2,7 +2,7 @@ import Duplo, {zod} from "@duplojs/duplojs";
 import duploDestructFloor from "../../scripts";
 import {parentPort} from "worker_threads";
 
-const duplo = Duplo({port: 1506, host: "0.0.0.0"});
+const duplo = Duplo({port: 1506, host: "0.0.0.0", environment: "DEV"});
 duplo.use(duploDestructFloor);
 
 const testAbstract = duplo.declareAbstractRoute("testAbstract")
